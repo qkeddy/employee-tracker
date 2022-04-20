@@ -1,3 +1,9 @@
+// List employees
+const listEmployees = `SELECT CONCAT(e.first_name, " ", e.last_name) from employees e`;
+
+// List roles
+const listRoles = `SELECT r.title roles FROM roles r`;
+
 // Department query
 const deptQuery = `SELECT * from departments`;
 
@@ -39,4 +45,4 @@ WHERE manager_id IS NULL`;
 // Update Employee query
 const updateEmployee = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
 
-module.exports = { deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee };
+module.exports = { listEmployees, deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee };

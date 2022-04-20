@@ -3,7 +3,7 @@ const mysql = require("mysql2");
 
 const { actionMenu, addEmployeeQuestions, addRoleQuestions, addDepartmentQuestions, updateEmployeeRole } = require("./lib/questions");
 
-const { roleQuery, employeeQuery, managerQuery } = require('./db/queries');
+const { deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee } = require("./db/queries");
 
 
 // Init function
@@ -60,7 +60,23 @@ function menuSystem(questions) {
 
 }
 
-// menuSystem(actionMenu());
+// Menu Function Take II - Pseudo code
+/**
+ * 
+ * Menu function
+    1. Inquirer #1 - Select main menu action
+    2. Switch statement for action selected
+        1. ACTION - View all employees selected —> go to View all employees function —> Query and display employees —> Call Init Function
+        2. ACTION - Add employee selected —> go to Add employee function —> Inquirer #2 (enter employee details) —> Update database —> Call Init Function
+        3. ACTION - Update employee role  —> go to Update employee function —> Query employees —> Inquirer #3 (with employee and role lists) —> Update database —> Call init Function
+        4. ACTION - View all roles —> go to View all roles function —> Query and display roles —> Call Init Function
+        5. ACTION - Add role —> go to Add role function —> Inquirer #4 (enter role details) —> Update database —> Call Init Function
+        6. ACTION - View all departments —> go to View all departments function —> Query and display departments —> Call Init Function
+        7. ACTION - Add department —> go to Add department function —> Inquirer #5 (enter department name) —> Update database —> Call Init Function
+        8. ACTION - Quit —> Exit from system
+ * 
+ */
+
 
 function init() {
     // Connect to MySQL
@@ -80,6 +96,8 @@ function init() {
     db.query(roleQuery, function (err, results) {
         console.log(results);
     });
+
+
 }
 
 init();
