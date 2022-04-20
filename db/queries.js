@@ -42,7 +42,9 @@ FROM employees e
     ON d.id = r.department_id
 WHERE manager_id IS NULL`;
 
-// Update Employee query
+// Update Employee manager query
 const updateEmployee = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
+
+// TODO - Update Employee role query
 
 module.exports = { listEmployees, deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee };

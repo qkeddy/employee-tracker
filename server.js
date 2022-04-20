@@ -1,5 +1,5 @@
 const inquirer = require("inquirer");
-const mysql = require("mysql2");
+const mySqlPromise = require("mysql2/promise");
 const cTable = require("console.table");
 
 const { actionMenu, addEmployeeQuestions, addRoleQuestions, addDepartmentQuestions, updateEmployeeRole } = require("./lib/questions");
@@ -76,47 +76,36 @@ function menuSystem(questions) {
  * 
  */
 
-async function queryDatabase(db) {
-    db.query(employeeQuery, (err, results) => {
-        console.table(results);
-    });
+async function init() {
+    connection = await openDatabaseConnection();
+    await queryEmployeesAsync(connection);
+    await closeDatabaseConnection(connection);
 }
 
-function init() {
+async function openDatabaseConnection() {
     // Connect to MySQL
-    const db = mysql.createConnection({
+    console.log("Opening MySQL connection\n\n");
+    const connection = await mySqlPromise.createConnection({
         host: "localhost",
         user: "root",
         password: "fltbsl0294",
         database: "employee_db",
     });
+    return connection;
+}
 
-    // Test connection
-    db.connect((err) => {
-        if (err) {
-            return console.error("error: " + err.message);
-        }
-        console.log("Connected to the MySQL server");
-    });
+async function closeDatabaseConnection() {
+    // Closing connection to MySQL
+    console.log("Closing MySQL connection");
+    await connection.end();
+}
 
-    // Query database
-    // db.query(employeeQuery, (err, results) => {
-    //     console.table(results);
-    // });
-    queryDatabase(db);
+async function queryEmployeesAsync(connection) {
 
-    // Close the connection to MySQL
-    db.end((err) => {
-        if (err) {
-            return console.log("error:" + err.message);
-        }
-        console.log("Close the database connection");
-    });
+    const [rows] = await connection.execute(employeeQuery);
+    console.table(rows);
 
-    // Release the connection to MySQL
-    // db.destroy();
 
-    console.log("got here");
 }
 
 init();
