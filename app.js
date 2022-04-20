@@ -1,5 +1,9 @@
 const inquirer = require("inquirer");
+const mysql = require("mysql2");
+
 const { actionMenu, addEmployeeQuestions, addRoleQuestions, addDepartmentQuestions, updateEmployeeRole } = require("./lib/questions");
+
+const { roleQuery, employeeQuery, managerQuery } = require('./db/queries');
 
 
 // Init function
@@ -56,4 +60,26 @@ function menuSystem(questions) {
 
 }
 
-menuSystem(actionMenu());
+// menuSystem(actionMenu());
+
+function init() {
+    // Connect to MySQL
+    const db = mysql.createConnection(
+        {
+            host: "localhost",
+            user: "root",
+            password: "fltbsl0294",
+            database: "employee_db",
+        },
+        console.log(`Connected to the employees_db database.`)
+    );
+
+    console.log(roleQuery);
+
+    // Query database
+    db.query(roleQuery, function (err, results) {
+        console.log(results);
+    });
+}
+
+init();

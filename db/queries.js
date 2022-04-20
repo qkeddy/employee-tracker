@@ -1,3 +1,6 @@
+// Department query
+const deptQuery = `SELECT * from departments`;
+
 // Role query
 const roleQuery = `SELECT r.id, r.title, d.name AS department, r.salary
 FROM roles r
@@ -33,4 +36,7 @@ FROM employees e
     ON d.id = r.department_id
 WHERE manager_id IS NULL`;
 
-module.exports = { roleQuery, employeeQuery, managerQuery };
+// Update Employee query
+const updateEmployee = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
+
+module.exports = { deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee };
