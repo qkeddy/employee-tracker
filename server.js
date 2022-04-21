@@ -50,6 +50,7 @@ async function closeDatabaseConnection(connection) {
  ** Main menu system
  */
 function menuSystem() {
+
     inquirer
         .prompt(actionMenu)
         .then((answers) => {
@@ -83,7 +84,6 @@ function menuSystem() {
 
                 case "Quit":
                     console.log("Exiting system");
-                    connection.end();
                     process.exit();
             }
         })
@@ -138,45 +138,43 @@ function addDepartment() {
 /**
  ** Add an employee
  */
-function addEmployeeX() {
-    // Get list of roles
-    connection
-        .query(listRoles, (err, roles) => {
-            if (err) console.error(err);
-            // console.log(roles);
-            // // Get list of managers
-            connection.query(listManagers, (err, managers) => {
-                if (err) console.error(err);
-                console.log(managers);
-                // console.log(addEmployeeQuestions(roles, managers));
-                inquirer.prompt(addEmployeeQuestions(roles, managers)).then((answers) => {
-                    // connection.query(addEmp, (err, results) => {
-                    //     if (err) console.error(err);
-                    //     menuSystem();
-                    // });
-                });
-            });
-        })
-        .catch((err) => console.error(err));
-}
-
 async function addEmployee() {
+    // Open a connection to the database
     connection = await openDatabaseConnection();
+
+    // Get the roles to dynamically populate the Inquirer function and then isolate roles into a simple array
     const [roleRecords] = await connection.execute(listRoles);
     const roles = roleRecords.map((obj) => obj.roles);
+
+    // Get the managers to dynamically populate the Inquirer function and then isolate managers into a simple array
     const [managerRecords] = await connection.execute(listManagers);
     const managers = managerRecords.map((obj) => obj.managers);
-    console.log(roles);
-    console.log(managers);
 
+    // Ask questions about new employees
+    // TODO - The only way to get this to work is to drop the async. Is this the correct approach?
     inquirer.prompt(addEmployeeQuestions(roles, managers)).then((answers) => {
-        // connection.query(addEmp, (err, results) => {
-        //     if (err) console.error(err);
-        //     menuSystem();
-        // });
-    });
 
-    // await closeDatabaseConnection(connection);
+        // Map selected role to role ID. For each record (role) compare the roles to the user input
+        const roleId = roleRecords.find((role) => role.roles === answers.empRole).id;
+
+        // Map selected role to employee ID. For each record (employee) compare the employee to the user input
+        const managerId = managerRecords.find((manager) => manager.managers === answers.empManager).id;
+
+        // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
+        connection.execute(`INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES ('${answers.empFirstName}', '${answers.empLastName}', ${roleId}, ${managerId})`);
+
+        // TODO Question - what is wrong with the syntax of this prepared statement?
+        // connection.execute(`INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`, `['quin', 'eddy', 2, 8]`, function (err, results, fields) {
+        //     console.log(results); // results contains rows returned by server
+        //     console.log(fields); // fields contains extra meta data about results, if available
+        // } );
+
+        // Close the database connection
+        closeDatabaseConnection(connection);
+
+        // Call the main menu system
+        menuSystem();
+    });
 }
 
 menuSystem();

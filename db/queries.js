@@ -2,7 +2,7 @@
 const listEmployees = `SELECT CONCAT(e.first_name, " ", e.last_name) from employees e`;
 
 // List roles
-const listRoles = `SELECT r.title roles FROM roles r`;
+const listRoles = `SELECT r.id, r.title roles FROM roles r`;
 
 // Department query
 const deptQuery = `SELECT * from departments`;
@@ -34,7 +34,7 @@ ORDER BY department, manager ASC`;
 
 // Manager query
 const listManagers = `SELECT
-    CONCAT(e.first_name, " ", e.last_name, " (", d.name, ")") managers
+    e.id, CONCAT(e.first_name, " ", e.last_name, " (", d.name, ")") managers
 FROM employees e
     JOIN roles r
     ON r.id = e.role_id
@@ -51,7 +51,7 @@ const addDept = `INSERT INTO departments (name) VALUES (?)`;
 // Add role
 
 // Add employee
-const addEmp = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?);`;
+const addEmp = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`;
 
 
 // TODO - Update Employee role query
