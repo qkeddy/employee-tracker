@@ -24,7 +24,7 @@ const { deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee, addDe
  */
 function menuSystem() {
     inquirer
-        .prompt(actionMenu())
+        .prompt(actionMenu)
         .then((answers) => {
             switch (answers.mainMenu) {
                 case "View all employees":
@@ -98,7 +98,7 @@ function queryDepartments() {
  */
 function addDepartment() {
     inquirer
-        .prompt(addDepartmentQuestions())
+        .prompt(addDepartmentQuestions)
         .then((answers) => {
             connection.query(addDept(), answers.deptName, (err, results) => {
                 if (err) console.error(err);
