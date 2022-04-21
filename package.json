@@ -1,4 +1,14 @@
 {
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "A content management system (CMS) to manage an employee database. The simple interface command line interface will allow a full employee census to be built and managed. The applications is built using Node.js, Inquirer, and MySQL.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "console.table": "^0.10.0",
     "inquirer": "^8.2.2",
