@@ -7,56 +7,39 @@ const { actionMenu, addEmployeeQuestions, addRoleQuestions, addDepartmentQuestio
 const { deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee } = require("./db/queries");
 
 // Init function
-function menuSystem(questions) {
-    // console.log(actionMenu());
-    return new Promise((resolve, reject) => {
-        inquirer
-            .prompt(questions)
-            .then((answers) => {
-                switch (answers.mainMenu) {
-                    case "View all employees":
-                        console.log("Current employee list");
-                        // Query all employees
+function menuSystem() {
+    inquirer
+        .prompt(actionMenu())
+        .then((answers) => {
+            switch (answers.mainMenu) {
+                case "View all employees":
+                    // Query all employees
+                    queryEmployees();
+                    menuSystem();
+                    break;
 
-                        // Call menuSystem with
-                        resolve(answers);
-                        menuSystem(actionMenu()).then(() => {
-                            console.log("Viewing all employeesXXXXX");
-                        });
-                        break;
+                case "Add employee":
+                    console.log("Adding an employee");
 
-                    case "Add employee":
-                        console.log("Adding an employee");
+                    menuSystem();
+                    break;
 
-                        // Call menuSystem with
-                        menuSystem(addEmployeeQuestions());
-                        break;
+                case "Update employee role":
+                    console.log("Updating an employee's role");
 
-                    case "Update employee role":
-                        console.log("Updating an employee's role");
+                    menuSystem();
+                    break;
 
-                        // Fetch current employees
+                case "Quit":
+                    console.log("Exiting system");
+                    break;
 
-                        // Call menuSystem with a list of current employees and roles
-                        menuSystem(updateEmployeeRole(["John", "Jim", "Sally"], ["Sales", "Engineering", "Admin"]));
+            }
+            console.log(answers.mainMenu);
 
-                        // MySQL Update employee with new role
-                        // Add MySQL
-                        break;
-
-                    case "Quit":
-                        console.log("Exiting system");
-                        break;
-
-                    default:
-                        break;
-                }
-                console.log(answers.mainMenu);
-
-                // Call the menu system function
-            })
-            .catch((err) => console.error(err));
-    });
+            // Call the menu system function
+        })
+        .catch((err) => console.error(err));
 }
 
 // Menu Function Take II - Pseudo code
@@ -76,12 +59,11 @@ function menuSystem(questions) {
  * 
  */
 
-async function init() {
-    connection = await openDatabaseConnection();
-    await queryEmployeesAsync(connection);
-    await closeDatabaseConnection(connection);
-}
 
+/**
+ ** Opens a connection to the MySQL database
+ * @returns connection to database
+ */
 async function openDatabaseConnection() {
     // Connect to MySQL
     console.log("Opening MySQL connection\n\n");
@@ -94,18 +76,23 @@ async function openDatabaseConnection() {
     return connection;
 }
 
-async function closeDatabaseConnection() {
+/**
+ ** Closes a connection to the MySQL database
+ * @param {*} connection 
+ */
+async function closeDatabaseConnection(connection) {
     // Closing connection to MySQL
-    console.log("Closing MySQL connection");
     await connection.end();
 }
 
-async function queryEmployeesAsync(connection) {
-
+/**
+ ** Queries Employees 
+ */
+async function queryEmployees() {
+    connection = await openDatabaseConnection();
     const [rows] = await connection.execute(employeeQuery);
     console.table(rows);
-
-
+    await closeDatabaseConnection(connection);
 }
 
-init();
+menuSystem();
