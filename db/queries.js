@@ -47,4 +47,11 @@ const updateEmployee = (employeeId, managerId) => `UPDATE employees e SET e.mana
 
 // TODO - Update Employee role query
 
-module.exports = { listEmployees, deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee };
+// Add department
+const addDept = () => `INSERT INTO departments (name) VALUES (?)`;
+
+// Add role
+
+// Add employee
+
+module.exports = { listEmployees, deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee, addDept };
