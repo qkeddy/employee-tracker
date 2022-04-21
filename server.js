@@ -6,14 +6,15 @@ const { actionMenu, addEmployeeQuestions, addRoleQuestions, addDepartmentQuestio
 
 const { deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee } = require("./db/queries");
 
-// Init function
+/**
+ ** Main menu system
+ */
 function menuSystem() {
     inquirer
         .prompt(actionMenu())
         .then((answers) => {
             switch (answers.mainMenu) {
                 case "View all employees":
-                    // Query all employees
                     queryEmployees();
                     menuSystem();
                     break;
@@ -30,14 +31,34 @@ function menuSystem() {
                     menuSystem();
                     break;
 
+                case "View all roles":
+                    queryRoles();
+                    menuSystem();
+                    break;
+
+                case "Add role":
+                    console.log("Add role");
+
+                    menuSystem();
+                    break;
+
+                case "View all departments":
+                    queryDepartments();
+                    menuSystem();
+                    break;
+
+                case "Add department":
+                    console.log("Add department");
+
+                    menuSystem();
+                    break;
+
                 case "Quit":
                     console.log("Exiting system");
                     break;
-
             }
-            console.log(answers.mainMenu);
-
-            // Call the menu system function
+            // Add space for enhance viewing
+            console.log(`\n\n`);
         })
         .catch((err) => console.error(err));
 }
@@ -59,7 +80,6 @@ function menuSystem() {
  * 
  */
 
-
 /**
  ** Opens a connection to the MySQL database
  * @returns connection to database
@@ -78,7 +98,7 @@ async function openDatabaseConnection() {
 
 /**
  ** Closes a connection to the MySQL database
- * @param {*} connection 
+ * @param {*} connection
  */
 async function closeDatabaseConnection(connection) {
     // Closing connection to MySQL
@@ -86,11 +106,31 @@ async function closeDatabaseConnection(connection) {
 }
 
 /**
- ** Queries Employees 
+ ** Queries Employees
  */
 async function queryEmployees() {
     connection = await openDatabaseConnection();
     const [rows] = await connection.execute(employeeQuery);
+    console.table(rows);
+    await closeDatabaseConnection(connection);
+}
+
+/**
+ ** Queries Roles
+ */
+async function queryRoles() {
+    connection = await openDatabaseConnection();
+    const [rows] = await connection.execute(roleQuery);
+    console.table(rows);
+    await closeDatabaseConnection(connection);
+}
+
+/**
+ ** Queries Departments
+ */
+async function queryDepartments() {
+    connection = await openDatabaseConnection();
+    const [rows] = await connection.execute(deptQuery);
     console.table(rows);
     await closeDatabaseConnection(connection);
 }
