@@ -1,23 +1,50 @@
+// Require the following NPM modules
 const inquirer = require("inquirer");
 const mysql = require("mysql2");
+const mySqlPromise = require("mysql2/promise");
 const cTable = require("console.table");
-
-// Create connection to MySQL
-const connection = mysql.createConnection(
-    {
-        host: "localhost",
-        user: "root",
-        password: "fltbsl0294",
-        database: "employee_db",
-    },
-    console.log("Connected to the employee_db MySQL database")
-);
 
 // Require Inquirer questions
 const { actionMenu, addEmployeeQuestions, addRoleQuestions, addDepartmentQuestions, updateEmployeeRole } = require("./lib/questions");
 
 // Require SQL Queries
-const { deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee, addDept } = require("./db/queries");
+const { listEmployees, listRoles, deptQuery, roleQuery, employeeQuery, listManagers, updateEmployee, addDept, addEmp } = require("./db/queries");
+
+// Create connection to MySQL
+// const connection = mysql.createConnection(
+//     {
+//         host: "localhost",
+//         user: "root",
+//         password: "fltbsl0294",
+//         database: "employee_db",
+//     },
+//     console.log("Connected to the employee_db MySQL database")
+// );
+
+/**
+ ** Opens a connection to the MySQL database
+ * @returns connection to database
+ */
+async function openDatabaseConnection() {
+    // Connect to MySQL
+    console.log("Opening MySQL connection\n\n");
+    const connection = await mySqlPromise.createConnection({
+        host: "localhost",
+        user: "root",
+        password: "fltbsl0294",
+        database: "employee_db",
+    });
+    return connection;
+}
+
+/**
+ ** Closes a connection to the MySQL database
+ * @param {*} connection
+ */
+async function closeDatabaseConnection(connection) {
+    // Closing connection to MySQL
+    await connection.end();
+}
 
 /**
  ** Main menu system
@@ -32,7 +59,7 @@ function menuSystem() {
                     break;
 
                 case "Add employee":
-                    console.log("Adding an employee");
+                    addEmployee();
                     break;
 
                 case "Update employee role":
@@ -100,12 +127,56 @@ function addDepartment() {
     inquirer
         .prompt(addDepartmentQuestions)
         .then((answers) => {
-            connection.query(addDept(), answers.deptName, (err, results) => {
+            connection.query(addDept, answers.deptName, (err, results) => {
                 if (err) console.error(err);
                 menuSystem();
             });
         })
         .catch((err) => console.error(err));
+}
+
+/**
+ ** Add an employee
+ */
+function addEmployeeX() {
+    // Get list of roles
+    connection
+        .query(listRoles, (err, roles) => {
+            if (err) console.error(err);
+            // console.log(roles);
+            // // Get list of managers
+            connection.query(listManagers, (err, managers) => {
+                if (err) console.error(err);
+                console.log(managers);
+                // console.log(addEmployeeQuestions(roles, managers));
+                inquirer.prompt(addEmployeeQuestions(roles, managers)).then((answers) => {
+                    // connection.query(addEmp, (err, results) => {
+                    //     if (err) console.error(err);
+                    //     menuSystem();
+                    // });
+                });
+            });
+        })
+        .catch((err) => console.error(err));
+}
+
+async function addEmployee() {
+    connection = await openDatabaseConnection();
+    const [roleRecords] = await connection.execute(listRoles);
+    const roles = roleRecords.map((obj) => obj.roles);
+    const [managerRecords] = await connection.execute(listManagers);
+    const managers = managerRecords.map((obj) => obj.managers);
+    console.log(roles);
+    console.log(managers);
+
+    inquirer.prompt(addEmployeeQuestions(roles, managers)).then((answers) => {
+        // connection.query(addEmp, (err, results) => {
+        //     if (err) console.error(err);
+        //     menuSystem();
+        // });
+    });
+
+    // await closeDatabaseConnection(connection);
 }
 
 menuSystem();

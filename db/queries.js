@@ -33,7 +33,7 @@ FROM employees e
 ORDER BY department, manager ASC`;
 
 // Manager query
-const managerQuery = `SELECT
+const listManagers = `SELECT
     CONCAT(e.first_name, " ", e.last_name, " (", d.name, ")") managers
 FROM employees e
     JOIN roles r
@@ -45,13 +45,17 @@ WHERE manager_id IS NULL`;
 // Update Employee manager query
 const updateEmployee = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
 
-// TODO - Update Employee role query
-
 // Add department
-const addDept = () => `INSERT INTO departments (name) VALUES (?)`;
+const addDept = `INSERT INTO departments (name) VALUES (?)`;
 
 // Add role
 
 // Add employee
+const addEmp = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?);`;
 
-module.exports = { listEmployees, deptQuery, roleQuery, employeeQuery, managerQuery, updateEmployee, addDept };
+
+// TODO - Update Employee role query
+
+
+
+module.exports = { listEmployees, listRoles, deptQuery, roleQuery, employeeQuery, listManagers, updateEmployee, addDept, addEmp };
