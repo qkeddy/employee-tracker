@@ -1,8 +1,8 @@
 // List employees
-const listEmployeesQuery = `SELECT e.id, CONCAT(e.first_name, " ", e.last_name) employee from employees e`;
+const listEmployeesQuery = `SELECT e.id, CONCAT(e.first_name, " ", e.last_name) employee from employees e ORDER BY employee`;
 
 // List roles
-const listRolesQuery = `SELECT r.id, r.title role FROM roles r`;
+const listRolesQuery = `SELECT r.id, r.title role FROM roles r ORDER BY role`;
 
 // Department query
 const deptQuery = `SELECT * from departments`;
@@ -43,12 +43,13 @@ FROM employees e
 WHERE manager_id IS NULL`;
 
 // Add department
-const addDepartmentQuery = `INSERT INTO departments (name) VALUES (?)`;
+const addDepartmentQuery = (department) => `INSERT INTO departments (name) VALUES ('${department}')`;
 
 // Add role
 
 // Add employee
 const addEmployeeQuery = (firstName, lastName, roleId, managerId) => `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES ('${firstName}', '${lastName}', ${roleId}, ${managerId})`;
+
 const addEmployeeQueryX = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`;
 
 // Update Employee manager query
@@ -57,6 +58,4 @@ const updateEmployeeRoleQuery = (employeeId, roleId) => `UPDATE employees e SET 
 // Update Employee manager query
 const updateEmployeeManagerQuery = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
 
-
-
-module.exports = { deptQuery, roleQuery, employeeQuery, listEmployeesQuery, listRolesQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery };
+module.exports = { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery };

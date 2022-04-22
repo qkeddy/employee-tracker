@@ -7,7 +7,7 @@ const cTable = require("console.table");
 const { actionMenu, addRoleQuestions, addDepartmentQuestions, addEmployeeQuestions, updateEmployeeRoleQuestions, updateEmployeeManagerQuestions } = require("./lib/questions");
 
 // Require SQL Queries
-const { deptQuery, roleQuery, employeeQuery, listEmployeesQuery, listRolesQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery } = require("./db/queries");
+const { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery } = require("./db/queries");
 
 /**
  ** Opens a connection to the MySQL database
@@ -253,16 +253,25 @@ async function updateEmployeeManager() {
 /**
  ** Add a department
  */
-function addDepartment() {
+async function addDepartment() {
+    // Open a connection to the database
+    connection = await openDatabaseConnection();
+
     inquirer
         .prompt(addDepartmentQuestions)
         .then((answers) => {
-            connection.query(addDept, answers.deptName, (err, results) => {
-                if (err) console.error(err);
-                menuSystem();
-            });
+            // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
+            connection.execute(addDepartmentQuery(answers.deptName));
+
+            // Close the database connection
+            closeDatabaseConnection(connection);
+
+            // Call the main menu system
+            menuSystem();
+
         })
         .catch((err) => console.error(err));
 }
+
 
 menuSystem();
