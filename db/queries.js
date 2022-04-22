@@ -52,11 +52,11 @@ const addEmployeeQuery = (firstName, lastName, roleId, managerId) => `INSERT INT
 const addEmployeeQueryX = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`;
 
 // Update Employee manager query
-const updateEmployeeManagerQuery = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
-
-// Update Employee manager query
 const updateEmployeeRoleQuery = (employeeId, roleId) => `UPDATE employees e SET e.role_id = ${roleId} WHERE e.id = ${employeeId}`;
 
+// Update Employee manager query
+const updateEmployeeManagerQuery = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
 
 
-module.exports = { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, updateEmployeeManagerQuery, updateEmployeeRoleQuery, addDepartmentQuery, addEmployeeQuery };
+
+module.exports = { deptQuery, roleQuery, employeeQuery, listEmployeesQuery, listRolesQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery };
