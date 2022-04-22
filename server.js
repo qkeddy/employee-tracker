@@ -157,10 +157,10 @@ async function addEmployee() {
     // TODO - The only way to get this to work is to drop the async. Is this the correct approach?
     inquirer.prompt(addEmployeeQuestions(roles, managers)).then((answers) => {
         // Map selected role to role ID. For each record (role) compare the roles to the user input
-        const roleId = roleRecords.find((record) => record.role === answers.empRole).id;
+        const roleId = roleRecords.find((obj) => obj.role === answers.empRole).id;
 
         // Map selected role to employee ID. For each record (employee) compare the employee to the user input
-        const managerId = managerRecords.find((record) => record.manager === answers.empManager).id;
+        const managerId = managerRecords.find((obj) => obj.manager === answers.empManager).id;
 
         // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
         connection.execute(addEmployeeQuery(answers.empFirstName, answers.empLastName, roleId, managerId));
@@ -199,10 +199,10 @@ async function updateEmployeeRole() {
     // Ask which employee should have their role updated
     inquirer.prompt(updateEmployeeRoleQuestions(employees, roles)).then((answers) => {
         // Map selected role to employee ID. For each record (employee) compare the employee to the user input
-        const employeeId = employeeRecords.find((record) => record.employee === answers.selectedEmployee).id;
+        const employeeId = employeeRecords.find((obj) => obj.employee === answers.selectedEmployee).id;
 
         // Map selected role to role ID. For each record (role) compare the roles to the user input
-        const roleId = roleRecords.find((record) => record.role === answers.selectedRole).id;
+        const roleId = roleRecords.find((obj) => obj.role === answers.selectedRole).id;
 
         // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
         connection.execute(updateEmployeeRoleQuery(employeeId, roleId));
@@ -233,10 +233,10 @@ async function updateEmployeeManager() {
     // Ask which employee should have their role updated
     inquirer.prompt(updateEmployeeManagerQuestions(employees, managers)).then((answers) => {
         // Map selected role to employee ID. For each record (employee) compare the employee to the user input
-        const employeeId = employeeRecords.find((record) => record.employee === answers.selectedEmployee).id;
+        const employeeId = employeeRecords.find((obj) => obj.employee === answers.selectedEmployee).id;
 
         // Map selected role to employee ID. For each record (employee) compare the employee to the user input
-        const managerId = managerRecords.find((record) => record.manager === answers.selectedManager).id;
+        const managerId = managerRecords.find((obj) => obj.manager === answers.selectedManager).id;
 
         // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
         connection.execute(updateEmployeeManagerQuery(employeeId, managerId));
@@ -287,7 +287,7 @@ async function addRole() {
         .prompt(addRoleQuestions(departments))
         .then((answers) => {
             // Map selected role to employee ID. For each record (employee) compare the employee to the user input
-            const departmentId = departmentRecords.find((record) => record.name === answers.selectedDept).id;
+            const departmentId = departmentRecords.find((obj) => obj.name === answers.selectedDept).id;
 
             // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
             connection.execute(addRoleQuery(answers.titleName, answers.salary, departmentId));
