@@ -154,27 +154,18 @@ async function addEmployee() {
     const managers = managerRecords.map((obj) => obj.manager);
 
     // Ask questions about new employees
-    // TODO - The only way to get this to work is to drop the async. Is this the correct approach?
-    inquirer.prompt(addEmployeeQuestions(roles, managers)).then((answers) => {
+    inquirer.prompt(addEmployeeQuestions(roles, managers)).then(async (answers) => {
         // Map selected role to role ID. For each role object, compare the role to the user input
         const roleId = roleRecords.find((obj) => obj.role === answers.empRole).id;
 
         // Map selected employee to employee ID. For each manager object compare the manager to the user input
         const managerId = managerRecords.find((obj) => obj.manager === answers.empManager).id;
 
-        // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
-        connection.execute(addEmployeeQuery(answers.empFirstName, answers.empLastName, roleId, managerId));
-
-        // TODO Question - what is wrong with the syntax of this prepared statement?
-        // connection.execute(`INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES ('${answers.empFirstName}', '${answers.empLastName}', ${roleId}, ${managerId})`);
-
-        // connection.execute(`INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`, `['quin', 'eddy', 2, 8]`, function (err, results, fields) {
-        //     console.log(results); // results contains rows returned by server
-        //     console.log(fields); // fields contains extra meta data about results, if available
-        // } );
+        // Insert the selected data into the database using a prepared statement. 
+        await connection.execute(addEmployeeQuery,[answers.empFirstName, answers.empLastName, roleId, managerId]);
 
         // Close the database connection
-        closeDatabaseConnection(connection);
+        await closeDatabaseConnection(connection);
 
         // Call the main menu system
         menuSystem();

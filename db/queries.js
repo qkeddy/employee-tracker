@@ -48,10 +48,8 @@ const addDepartmentQuery = (department) => `INSERT INTO departments (name) VALUE
 // Add role
 const addRoleQuery = (title, salary, departmentId) => `INSERT INTO roles (title, salary, department_id) VALUES ('${title}', ${salary}, ${departmentId})`;
 
-// Add employee
-const addEmployeeQuery = (firstName, lastName, roleId, managerId) => `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES ('${firstName}', '${lastName}', ${roleId}, ${managerId})`;
-
-const addEmployeeQueryX = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`;
+// Add employee using a prepared statement
+const addEmployeeQuery = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`;
 
 // Update Employee manager query
 const updateEmployeeRoleQuery = (employeeId, roleId) => `UPDATE employees e SET e.role_id = ${roleId} WHERE e.id = ${employeeId}`;
