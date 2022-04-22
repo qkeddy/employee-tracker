@@ -1,8 +1,8 @@
 // List employees
-const listEmployees = `SELECT CONCAT(e.first_name, " ", e.last_name) from employees e`;
+const listEmployeesQuery = `SELECT e.id, CONCAT(e.first_name, " ", e.last_name) employee from employees e`;
 
 // List roles
-const listRoles = `SELECT r.id, r.title roles FROM roles r`;
+const listRolesQuery = `SELECT r.id, r.title role FROM roles r`;
 
 // Department query
 const deptQuery = `SELECT * from departments`;
@@ -33,8 +33,8 @@ FROM employees e
 ORDER BY department, manager ASC`;
 
 // Manager query
-const listManagers = `SELECT
-    e.id, CONCAT(e.first_name, " ", e.last_name, " (", d.name, ")") managers
+const listManagersQuery = `SELECT
+    e.id, CONCAT(e.first_name, " ", e.last_name, " (", d.name, ")") manager
 FROM employees e
     JOIN roles r
     ON r.id = e.role_id
@@ -42,20 +42,21 @@ FROM employees e
     ON d.id = r.department_id
 WHERE manager_id IS NULL`;
 
-// Update Employee manager query
-const updateEmployee = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
-
 // Add department
-const addDept = `INSERT INTO departments (name) VALUES (?)`;
+const addDepartmentQuery = `INSERT INTO departments (name) VALUES (?)`;
 
 // Add role
 
 // Add employee
-const addEmp = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`;
+const addEmployeeQuery = (firstName, lastName, roleId, managerId) => `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES ('${firstName}', '${lastName}', ${roleId}, ${managerId})`;
+const addEmployeeQueryX = `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES (?, ?, ?, ?)`;
+
+// Update Employee manager query
+const updateEmployeeManagerQuery = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
+
+// Update Employee manager query
+const updateEmployeeRoleQuery = (employeeId, roleId) => `UPDATE employees e SET e.role_id = ${roleId} WHERE e.id = ${employeeId}`;
 
 
-// TODO - Update Employee role query
 
-
-
-module.exports = { listEmployees, listRoles, deptQuery, roleQuery, employeeQuery, listManagers, updateEmployee, addDept, addEmp };
+module.exports = { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, updateEmployeeManagerQuery, updateEmployeeRoleQuery, addDepartmentQuery, addEmployeeQuery };
