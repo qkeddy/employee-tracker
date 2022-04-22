@@ -7,7 +7,7 @@ const cTable = require("console.table");
 const { actionMenu, addRoleQuestions, addDepartmentQuestions, addEmployeeQuestions, updateEmployeeRoleQuestions, updateEmployeeManagerQuestions } = require("./lib/questions");
 
 // Require SQL Queries
-const { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery } = require("./db/queries");
+const { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery, addRoleQuery } = require("./db/queries");
 
 /**
  ** Opens a connection to the MySQL database
@@ -63,6 +63,7 @@ function menuSystem() {
                     break;
 
                 case "Add role":
+                    addRole();
                     break;
 
                 case "View all departments":
@@ -229,8 +230,6 @@ async function updateEmployeeManager() {
     const [employeeRecords] = await connection.execute(listEmployeesQuery);
     const employees = employeeRecords.map((obj) => obj.employee);
 
-    console.log(managerRecords);
-
     // Ask which employee should have their role updated
     inquirer.prompt(updateEmployeeManagerQuestions(employees, managers)).then((answers) => {
         // Map selected role to employee ID. For each record (employee) compare the employee to the user input
@@ -273,5 +272,33 @@ async function addDepartment() {
         .catch((err) => console.error(err));
 }
 
+/**
+ ** Add a role
+ */
+async function addRole() {
+    // Open a connection to the database
+    connection = await openDatabaseConnection();
+
+    // Get the managers to dynamically populate the Inquirer function and then isolate managers into a simple array
+    const [departmentRecords] = await connection.execute(deptQuery);
+    const departments = departmentRecords.map((obj) => obj.name);
+
+    inquirer
+        .prompt(addRoleQuestions(departments))
+        .then((answers) => {
+            // Map selected role to employee ID. For each record (employee) compare the employee to the user input
+            const departmentId = departmentRecords.find((record) => record.name === answers.selectedDept).id;
+
+            // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
+            connection.execute(addRoleQuery(answers.titleName, answers.salary, departmentId));
+
+            // Close the database connection
+            closeDatabaseConnection(connection);
+
+            // Call the main menu system
+            menuSystem();
+        })
+        .catch((err) => console.error(err));
+}
 
 menuSystem();

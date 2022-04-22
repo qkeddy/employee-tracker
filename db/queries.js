@@ -46,6 +46,7 @@ WHERE manager_id IS NULL`;
 const addDepartmentQuery = (department) => `INSERT INTO departments (name) VALUES ('${department}')`;
 
 // Add role
+const addRoleQuery = (title, salary, departmentId) => `INSERT INTO roles (title, salary, department_id) VALUES ('${title}', ${salary}, ${departmentId})`;
 
 // Add employee
 const addEmployeeQuery = (firstName, lastName, roleId, managerId) => `INSERT INTO employees (first_name,last_name,role_id,manager_id) VALUES ('${firstName}', '${lastName}', ${roleId}, ${managerId})`;
@@ -58,4 +59,4 @@ const updateEmployeeRoleQuery = (employeeId, roleId) => `UPDATE employees e SET 
 // Update Employee manager query
 const updateEmployeeManagerQuery = (employeeId, managerId) => `UPDATE employees e SET e.manager_id = ${managerId} WHERE e.id = ${employeeId}`;
 
-module.exports = { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery };
+module.exports = { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery, addRoleQuery };
