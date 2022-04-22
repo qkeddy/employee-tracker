@@ -7,7 +7,7 @@ const cTable = require("console.table");
 const { actionMenu, addRoleQuestions, addDepartmentQuestions, addEmployeeQuestions, updateEmployeeRoleQuestions, updateEmployeeManagerQuestions } = require("./lib/questions");
 
 // Require SQL Queries
-const { listEmployeesQuery, listRolesQuery, deptQuery, roleQuery, employeeQuery, listManagersQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery, addDepartmentQuery, addRoleQuery } = require("./db/queries");
+const { listEmployeesQuery, listRolesQuery, listManagersQuery, deptQuery, roleQuery, employeeQuery, addDepartmentQuery, addRoleQuery, addEmployeeQuery, updateEmployeeRoleQuery, updateEmployeeManagerQuery } = require("./db/queries");
 
 /**
  ** Opens a connection to the MySQL database
@@ -161,8 +161,8 @@ async function addEmployee() {
         // Map selected employee to employee ID. For each manager object compare the manager to the user input
         const managerId = managerRecords.find((obj) => obj.manager === answers.empManager).id;
 
-        // Insert the selected data into the database using a prepared statement. 
-        await connection.execute(addEmployeeQuery,[answers.empFirstName, answers.empLastName, roleId, managerId]);
+        // Insert the selected data into the database using a prepared statement.
+        await connection.execute(addEmployeeQuery, [answers.empFirstName, answers.empLastName, roleId, managerId]);
 
         // Close the database connection
         await closeDatabaseConnection(connection);
@@ -188,18 +188,18 @@ async function updateEmployeeRole() {
     const roles = roleRecords.map((obj) => obj.role);
 
     // Ask which employee should have their role updated
-    inquirer.prompt(updateEmployeeRoleQuestions(employees, roles)).then((answers) => {
+    inquirer.prompt(updateEmployeeRoleQuestions(employees, roles)).then(async (answers) => {
         // Map selected employee to employee ID. For each employee object compare the employee to the user input
         const employeeId = employeeRecords.find((obj) => obj.employee === answers.selectedEmployee).id;
 
         // Map selected role to role ID. For each role object compare the role to the user input
         const roleId = roleRecords.find((obj) => obj.role === answers.selectedRole).id;
 
-        // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
-        connection.execute(updateEmployeeRoleQuery(employeeId, roleId));
+        // Update the selected data into the database using a prepared statement
+        await connection.execute(updateEmployeeRoleQuery, [roleId, employeeId]);
 
         // Close the database connection
-        closeDatabaseConnection(connection);
+        await closeDatabaseConnection(connection);
 
         // Call the main menu system
         menuSystem();
@@ -222,18 +222,18 @@ async function updateEmployeeManager() {
     const employees = employeeRecords.map((obj) => obj.employee);
 
     // Ask which employee should have their role updated
-    inquirer.prompt(updateEmployeeManagerQuestions(employees, managers)).then((answers) => {
+    inquirer.prompt(updateEmployeeManagerQuestions(employees, managers)).then(async (answers) => {
         // Map selected role to employee ID. For each employee object compare the employee to the user input
         const employeeId = employeeRecords.find((obj) => obj.employee === answers.selectedEmployee).id;
 
         // Map selected role to employee ID. For each manager object compare the manager to the user input
         const managerId = managerRecords.find((obj) => obj.manager === answers.selectedManager).id;
 
-        // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
-        connection.execute(updateEmployeeManagerQuery(employeeId, managerId));
+        // Update the selected data into the database using a prepared statement
+        await connection.execute(updateEmployeeManagerQuery, [managerId, employeeId]);
 
         // Close the database connection
-        closeDatabaseConnection(connection);
+        await closeDatabaseConnection(connection);
 
         // Call the main menu system
         menuSystem();
@@ -258,7 +258,6 @@ async function addDepartment() {
 
             // Call the main menu system
             menuSystem();
-
         })
         .catch((err) => console.error(err));
 }
@@ -276,15 +275,15 @@ async function addRole() {
 
     inquirer
         .prompt(addRoleQuestions(departments))
-        .then((answers) => {
+        .then(async (answers) => {
             // Map selected department to employee ID. For each department object compare the department to the user input
             const departmentId = departmentRecords.find((obj) => obj.name === answers.selectedDept).id;
 
-            // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
-            connection.execute(addRoleQuery(answers.titleName, answers.salary, departmentId));
+            // Insert the selected data into the database using a prepared statement
+            await connection.execute(addRoleQuery, [answers.titleName, answers.salary, departmentId]);
 
             // Close the database connection
-            closeDatabaseConnection(connection);
+            await closeDatabaseConnection(connection);
 
             // Call the main menu system
             menuSystem();
