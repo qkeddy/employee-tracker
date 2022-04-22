@@ -249,12 +249,12 @@ async function addDepartment() {
 
     inquirer
         .prompt(addDepartmentQuestions)
-        .then((answers) => {
-            // Insert the selected data into the database. Note that this should be a prepared statement, but the syntax is not currently working
-            connection.execute(addDepartmentQuery(answers.deptName));
+        .then(async (answers) => {
+            // Insert the selected data into the database using a prepared statement
+            await connection.execute(addDepartmentQuery, [answers.deptName]);
 
             // Close the database connection
-            closeDatabaseConnection(connection);
+            await closeDatabaseConnection(connection);
 
             // Call the main menu system
             menuSystem();

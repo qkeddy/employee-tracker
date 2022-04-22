@@ -42,8 +42,8 @@ FROM employees e
     ON d.id = r.department_id
 WHERE manager_id IS NULL`;
 
-// Add department
-const addDepartmentQuery = (department) => `INSERT INTO departments (name) VALUES ('${department}')`;
+// Add department using a prepared statement
+const addDepartmentQuery = `INSERT INTO departments (name) VALUES (?)`;
 
 // Add role
 const addRoleQuery = (title, salary, departmentId) => `INSERT INTO roles (title, salary, department_id) VALUES ('${title}', ${salary}, ${departmentId})`;
